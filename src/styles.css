@@ -37,6 +37,7 @@ a {
 
 .app-shell {
   min-height: 100vh;
+  width: 100%;
 }
 
 .app-header {
@@ -45,9 +46,8 @@ a {
   display: flex;
   gap: 32px;
   justify-content: space-between;
-  margin: 0 auto;
-  max-width: 1280px;
   padding: 20px 32px;
+  width: 100%;
 }
 
 .brand {
@@ -122,8 +122,8 @@ a {
 
 .app-main {
   margin: 0 auto;
-  max-width: 1280px;
   padding: 64px 32px;
+  width: 100%;
 }
 
 .intro-panel,
@@ -4475,5 +4475,227 @@ p {
 @media (max-width: 899px) {
   .kitchen-sidebar__item > svg:first-child {
     display: none;
+  }
+}
+
+/* Shared visual language: use the Garçom app's red, graphite, and compact
+   surfaces as the baseline across the product areas. */
+:root {
+  --ink: #333;
+  --muted: #666;
+  --line: #e5e5e2;
+  --surface: #fff;
+  --brand: #d73035;
+  --focus-ring: rgba(215, 48, 53, 0.28);
+}
+
+body {
+  background: #fafafa;
+  color: var(--ink);
+}
+
+.brand__mark {
+  border-radius: 8px;
+}
+
+.brand__wordmark {
+  color: var(--ink);
+  display: inline-flex;
+  font-size: 1.125rem;
+  gap: 0;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  text-transform: none;
+}
+
+.brand__wordmark strong {
+  font-weight: 700;
+}
+
+.brand__wordmark > span {
+  font-weight: 300;
+}
+
+.app-header {
+  background: #fff;
+  border-color: var(--line);
+}
+
+.app-nav__link--active {
+  color: var(--brand);
+}
+
+.intro-panel,
+.placeholder-panel {
+  border-radius: 8px;
+  box-shadow: 0 2px 0.5px rgba(0, 0, 0, 0.06);
+}
+
+.eyebrow {
+  color: var(--brand);
+  letter-spacing: 0.06em;
+}
+
+.app-shell .button--primary {
+  background: var(--brand) !important;
+  color: #fff !important;
+}
+
+.app-shell .button--primary:hover {
+  background: #c82a2f !important;
+}
+
+.app-shell .button--secondary {
+  background: #fff !important;
+  border: 1px solid rgba(215, 48, 53, 0.2);
+  color: #b9272d !important;
+}
+
+.app-shell .button--secondary:hover {
+  background: #fff5f1 !important;
+  border-color: var(--brand);
+}
+
+/* Delivery keeps its discovery layout while adopting the Garçom app's
+   restrained corners, red active states, and lighter component chrome. */
+.delivery-page {
+  --delivery-brand: #d73035;
+  --delivery-brand-dark: #b9272d;
+  --delivery-ink: #333;
+  --delivery-muted: #666;
+  --delivery-line: #e5e5e2;
+  --delivery-surface: #fff;
+  background: #fafafa;
+}
+
+.delivery-brand__mark {
+  border-radius: 8px;
+  transform: none;
+}
+
+.delivery-search__input {
+  background: #fff !important;
+  border-radius: 8px;
+}
+
+.delivery-search__input [data-slot="input-wrapper"] {
+  background: #fff !important;
+  border: 1px solid var(--delivery-line);
+  border-radius: 8px;
+  box-shadow: 0 2px 0.5px rgba(0, 0, 0, 0.06);
+  min-height: 44px;
+}
+
+.delivery-search__icon {
+  color: #888;
+  top: 12px;
+}
+
+.delivery-mode {
+  background: #f2f2ef;
+  border-radius: 8px;
+}
+
+.delivery-mode__button,
+.delivery-mode__button--active {
+  border-radius: 6px;
+}
+
+.delivery-mode__button--active {
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(36, 36, 36, 0.12);
+  color: var(--delivery-brand);
+}
+
+.delivery-mode__button--active:hover {
+  background: #fff;
+  color: var(--delivery-brand-dark);
+}
+
+.delivery-cart-button,
+.delivery-filter,
+.delivery-cart-drawer__footer .delivery-checkout,
+.delivery-order-card__repeat {
+  border-radius: 8px;
+}
+
+.delivery-sidebar__item {
+  border-radius: 8px;
+}
+
+.delivery-sidebar__item:hover,
+.delivery-sidebar__item--active {
+  background: #fff0ec;
+  color: var(--delivery-brand);
+}
+
+.delivery-category--active .delivery-category__image {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--delivery-brand);
+}
+
+.delivery-filter--active {
+  background: #fff0ec !important;
+}
+
+.delivery-promo,
+.delivery-food-card,
+.delivery-restaurant-card,
+.delivery-menu-card,
+.delivery-order-card {
+  border-radius: 8px;
+}
+
+.delivery-promo__art,
+.delivery-food-card__image-wrap img,
+.delivery-restaurant-card__image,
+.delivery-menu-card > img {
+  border-radius: 6px;
+}
+
+.delivery-food-card,
+.delivery-restaurant-card,
+.delivery-order-card {
+  box-shadow: 0 2px 0.5px rgba(0, 0, 0, 0.06);
+}
+
+.delivery-food-card:hover,
+.delivery-restaurant-card:hover {
+  box-shadow: 0 8px 20px rgba(36, 36, 36, 0.1);
+}
+
+.delivery-cart-button:hover,
+.delivery-checkout:hover {
+  background: #c82a2f !important;
+}
+
+@media (max-width: 720px) {
+  .intro-panel,
+  .placeholder-panel {
+    border-radius: 8px;
+  }
+}
+
+@media (min-width: 600px) {
+  .garcom-screen {
+    margin: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  .garcom-categories {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    max-width: none;
+    width: auto;
+  }
+
+  .garcom-menu-search {
+    max-width: none;
+    width: auto;
+  }
+
+  .garcom-bottom-nav,
+  .garcom-order-bar,
+  .garcom-order-footer {
+    max-width: none;
   }
 }
