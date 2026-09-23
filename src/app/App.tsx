@@ -50,8 +50,9 @@ function Shell() {
     <div className="app-shell">
       <header className="app-header">
         <Link className="brand" to="/">
-          <span className="brand__mark" aria-hidden="true">W</span>
-          <span>waiterapp</span>
+          <span aria-label="Waiterapp" className="brand__wordmark">
+            <strong>Waiter</strong><span>App</span>
+          </span>
         </Link>
 
         <nav aria-label="Áreas do produto" className="app-nav">
