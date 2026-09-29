@@ -2853,8 +2853,9 @@ p {
 }
 
 .garcom-categories {
-  grid-template-columns: repeat(5, minmax(56px, 1fr));
-  max-width: 520px;
+  column-gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  max-width: none;
 }
 
 .garcom-category {
