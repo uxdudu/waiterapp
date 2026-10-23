@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button } from "@heroui/react";
+import { Button, StatusBadge, Wordmark } from "../components/base";
 import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { GarcomPage } from "./GarcomPage";
 import { KitchenOrdersPage } from "./KitchenOrdersPage";
 import { DeliveryPage } from "./DeliveryPage";
+import { PlaygroundPage } from "./PlaygroundPage";
 
 type ConnectionState = "checking" | "connected" | "offline";
 
@@ -12,22 +13,8 @@ const areas = [
   { label: "App Garçom", path: "/garcom" },
   { label: "Dashboard Cozinha", path: "/cozinha" },
   { label: "Delivery App", path: "/delivery" },
+  { label: "Playground", path: "/playground" },
 ];
-
-function ConnectionBadge({ state }: { state: ConnectionState }) {
-  const labels: Record<ConnectionState, string> = {
-    checking: "Verificando backend",
-    connected: "Backend conectado",
-    offline: "Backend indisponível",
-  };
-
-  return (
-    <span className={`status-badge status-badge--${state}`}>
-      <span aria-hidden="true" className="status-badge__dot" />
-      {labels[state]}
-    </span>
-  );
-}
 
 function Shell() {
   const location = useLocation();
@@ -50,9 +37,7 @@ function Shell() {
     <div className="app-shell">
       <header className="app-header">
         <Link className="brand" to="/">
-          <span aria-label="Waiterapp" className="brand__wordmark">
-            <strong>Waiter</strong><span>App</span>
-          </span>
+          <Wordmark size="sm" />
         </Link>
 
         <nav aria-label="Áreas do produto" className="app-nav">
@@ -67,7 +52,7 @@ function Shell() {
           ))}
         </nav>
 
-        <ConnectionBadge state={connection} />
+        <StatusBadge tone={connection === "connected" ? "ready" : connection === "offline" ? "danger" : "neutral"}>{connection === "connected" ? "Backend conectado" : connection === "offline" ? "Backend indisponível" : "Verificando backend"}</StatusBadge>
       </header>
 
       <main className="app-main">
@@ -87,11 +72,10 @@ function HomePage() {
   return (
     <section className="intro-panel">
       <div className="eyebrow">Fundação do produto</div>
-      <h1>Um ponto de partida simples para o Waiterapp.</h1>
+      <h1>Três experiências, a mesma base visual.</h1>
       <p>
-        A base está pronta para receber as telas do App Garçom e do Dashboard
-        Cozinha, com uma API própria e persistência local enquanto definimos o
-        produto.
+        O App Garçom orienta a interface da Cozinha e do Delivery. Explore os
+        fluxos do protótipo e consulte os componentes Base e Blocks no playground.
       </p>
       <div className="intro-panel__actions">
         <Button onPress={() => navigate("/garcom")}>
@@ -137,6 +121,10 @@ export function App() {
 
   if (location.pathname === "/delivery") {
     return <DeliveryPage />;
+  }
+
+  if (location.pathname === "/playground") {
+    return <PlaygroundPage />;
   }
 
   return <Shell />;

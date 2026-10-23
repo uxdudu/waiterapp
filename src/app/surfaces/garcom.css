@@ -1,0 +1,164 @@
+/*
+ * App Garçom · page layout only. Visual language lives in Base and Blocks;
+ * this file positions them on the mobile-first screen.
+ */
+.garcom-page {
+  --wa-screen-max: 430px;
+  background: var(--color-bg-muted);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  min-height: 100svh;
+}
+
+.garcom-screen {
+  background: var(--color-bg-canvas);
+  display: flow-root;
+  margin: 0 auto;
+  max-width: var(--wa-screen-max);
+  min-height: 100svh;
+  position: relative;
+}
+
+.garcom-screen--nav { padding-bottom: var(--space-1400); }
+.garcom-screen--checkout { padding-bottom: 280px; }
+.garcom-screen--detail { padding-bottom: var(--space-1500); }
+
+.garcom-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-200);
+  padding: var(--space-300) var(--space-300) 0;
+}
+
+.garcom-product-list {
+  display: grid;
+  gap: var(--space-200);
+  padding-bottom: var(--space-300);
+}
+
+/* Item detail */
+.garcom-detail-hero {
+  height: 280px;
+  position: relative;
+}
+
+.garcom-detail-hero__close {
+  position: absolute;
+  right: var(--space-300);
+  top: calc(var(--space-300) + env(safe-area-inset-top));
+}
+
+.garcom-detail-content {
+  gap: var(--space-400);
+}
+
+/* Order history */
+.garcom-history {
+  gap: var(--space-400);
+  padding-bottom: var(--space-300);
+}
+
+.garcom-history__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-150);
+}
+
+.garcom-history__group > h2 {
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-lg-size, 1rem);
+  font-weight: var(--type-label-lg-weight, 500);
+  line-height: var(--type-label-lg-leading, 1.5);
+  margin: 0;
+}
+
+.garcom-history__list {
+  display: grid;
+  gap: var(--space-200);
+}
+
+/* Splash illustration (Figma vectors positioned as in the original frame) */
+.garcom-splash-illustration {
+  height: 140px;
+  position: relative;
+  width: 155px;
+}
+
+.garcom-splash-illustration img {
+  display: block;
+  max-width: none;
+  position: absolute;
+}
+
+.garcom-splash-illustration__background-complete { bottom: 7.25%; left: -2.58%; right: -15.35%; top: 2.71%; }
+.garcom-splash-illustration__background-simple { bottom: 31.96%; left: 15.45%; right: 2.12%; top: 0; }
+.garcom-splash-illustration__shadow { bottom: 0; left: 10.65%; right: -2.11%; top: 94.09%; }
+.garcom-splash-illustration__character-one { bottom: 2.95%; left: 26.17%; right: 47.03%; top: 13.98%; }
+.garcom-splash-illustration__character-two { bottom: 2.96%; left: 55.71%; right: 9.99%; top: 9.68%; }
+
+/* Wider screens keep the same components and widen the canvas. */
+@media (min-width: 600px) {
+  .garcom-page { --wa-screen-max: 720px; }
+
+  .garcom-screen {
+    box-shadow: 0 0 24px color-mix(in srgb, var(--color-shadow) 8%, transparent);
+  }
+
+  .garcom-screen .wa-device-status { display: none; }
+
+  .garcom-screen--nav { padding-bottom: var(--space-1200); }
+
+  .garcom-section {
+    padding-left: var(--space-500);
+    padding-right: var(--space-500);
+  }
+
+  .garcom-history__list,
+  .garcom-product-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .garcom-detail-hero { height: 360px; }
+}
+
+@media (min-width: 1100px) {
+  .garcom-page { --wa-screen-max: 1200px; }
+
+  .garcom-section {
+    padding-left: var(--space-800);
+    padding-right: var(--space-800);
+  }
+
+  .garcom-history__list,
+  .garcom-product-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .garcom-screen--detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(420px, 0.85fr);
+  }
+
+  .garcom-detail-hero {
+    height: calc(100svh - 96px);
+    min-height: 560px;
+  }
+
+  .garcom-detail-content {
+    padding-top: var(--space-1000);
+  }
+}
+
+/* Profile composes DS blocks; only screen arrangement lives here. */
+.garcom-profile { gap: var(--space-400); padding-bottom: var(--space-400); }
+.garcom-profile__layout,
+.garcom-profile__activity { display: grid; gap: var(--space-300); min-width: 0; }
+
+@media (min-width: 1100px) {
+  .garcom-profile__layout { align-items: start; gap: var(--space-400); grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.5fr); }
+}
+
+.garcom-screen--profile { padding-top: var(--space-150); }
+.garcom-profile > .wa-page-header .wa-page-header__title,
+.garcom-history > .wa-page-header .wa-page-header__title { font-weight: var(--font-weight-medium); }
+
