@@ -1,0 +1,29 @@
+/* Delivery discovery layout, composed from the same Base and Blocks as Garçom. */
+.delivery-page { --wa-header-height: 88px; background: var(--color-bg-canvas); color: var(--color-text-primary); font-family: var(--font-family-sans); min-height: 100svh; }
+.delivery-header { align-items: center; background: var(--color-bg-surface); border-bottom: 1px solid var(--color-border-subtle); display: flex; gap: var(--space-300); min-height: var(--wa-header-height); padding: var(--space-200) var(--space-400); position: sticky; top: 0; z-index: 5; }
+.delivery-header > .wa-search-field { flex: 1; }
+.delivery-layout { display: flex; }
+.delivery-content { display: flex; flex: 1; flex-direction: column; gap: var(--space-300); min-width: 0; padding: var(--space-400); }
+.delivery-filters { display: flex; gap: var(--space-100); overflow-x: auto; padding-bottom: var(--space-050); }
+.delivery-filters > * { flex-shrink: 0; }
+.delivery-promos { display: grid; gap: var(--space-300); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.delivery-section { display: flex; flex-direction: column; gap: var(--space-300); scroll-margin-top: var(--space-1400); }
+.delivery-products { display: grid; gap: var(--space-200); grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.delivery-restaurants { display: grid; gap: var(--space-300); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1200px) {
+  .delivery-location { display: none; }
+  .delivery-products, .delivery-restaurants { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .delivery-promos { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+  .delivery-header { flex-wrap: wrap; gap: var(--space-150); padding: var(--space-200); position: relative; }
+  .delivery-header > .wa-search-field { flex-basis: 100%; order: 3; }
+  .delivery-header > .wa-button { margin-left: auto; }
+  .delivery-header > .wa-segmented-control { order: 4; }
+  .delivery-layout { flex-direction: column; }
+  .delivery-content { padding: var(--space-300); }
+  .delivery-products, .delivery-restaurants { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .delivery-products, .delivery-restaurants { grid-template-columns: 1fr; }
+}

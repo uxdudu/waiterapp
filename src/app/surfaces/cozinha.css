@@ -1,0 +1,18 @@
+/* Cozinha: workspace layout; components inherit the Garçom visual language. */
+.kitchen-page {
+  background: var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  display: flex;
+  min-height: 100svh;
+  font-family: var(--font-family-sans);
+}
+.kitchen-workspace { flex: 1; min-width: 0; padding: var(--space-500); }
+.kitchen-main { margin-top: var(--space-500); }
+.kitchen-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-300); align-items: start; }
+.kitchen-menu, .kitchen-menu__products { display: flex; flex-direction: column; gap: var(--space-300); }
+.kitchen-menu__title { display: flex; align-items: center; gap: var(--space-150); }
+@media (max-width: 767px) {
+  .kitchen-page { flex-direction: column; }
+  .kitchen-workspace { padding: var(--space-300); }
+  .kitchen-board { grid-template-columns: 1fr; }
+}

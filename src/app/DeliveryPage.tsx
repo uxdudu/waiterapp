@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
-import { Button, Card, Chip, Input } from "@heroui/react";
-import { CheckCircle2, ChevronDown, CircleHelp, CircleUserRound, ClipboardList, Heart, Home, Info, MapPin, Minus, Plus, Search, ShoppingCart, Store, Tag, UtensilsCrossed, X, type LucideIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Button, CountBadge, EmptyState, FilterChip, InlineNotice, SearchField, SegmentedControl, Toast, Wordmark } from "../components/base";
+import { AppNavigation, CategoryRail, CheckoutBar, OrderLine, OrderSummaryCard, PageHeader, ProductCard, PromoBanner, RestaurantCard, SidePanel } from "../components/blocks";
+import "./surfaces/delivery.css";
+import { ChevronDown, CircleHelp, CircleUserRound, ClipboardList, Home, MapPin, ShoppingCart, Store, Tag, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import cheeseImage from "../assets/figma/garcom-raw-3.jpeg";
 import margaritaImage from "../assets/figma/garcom-raw-2.jpeg";
 
@@ -137,7 +139,8 @@ const orders = [
   { id: "#1031", restaurant: "Doce Pausa", status: "Entregue", time: "Ontem, 19:12", total: "R$ 37,80" },
 ];
 
-const formatPrice = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const TOAST_DURATION = 4500;
+
 
 export function DeliveryPage() {
   const [selectedCategory, setSelectedCategory] = useState<DeliveryCategory>("todos");
@@ -149,6 +152,15 @@ export function DeliveryPage() {
   const [showOrders, setShowOrders] = useState(false);
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]["id"] | null>(null);
   const [notice, setNotice] = useState("");
+  const [showServiceNotice, setShowServiceNotice] = useState(true);
+  const [activeNavigation, setActiveNavigation] = useState("Início");
+
+  useEffect(() => {
+    if (!notice) return;
+
+    const toastTimer = window.setTimeout(() => setNotice(""), TOAST_DURATION);
+    return () => window.clearTimeout(toastTimer);
+  }, [notice]);
 
   const visibleRestaurants = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase("pt-BR");
@@ -210,6 +222,7 @@ export function DeliveryPage() {
   }
 
   function handleNavigation(label: string) {
+    setActiveNavigation(label);
     if (label === "Meus pedidos") {
       setShowOrders(true);
       return;
@@ -220,106 +233,56 @@ export function DeliveryPage() {
   }
 
   return (
-    <div className="delivery-page">
+    <div className="delivery-page" data-type-context="webapp">
       <header className="delivery-header">
-        <a className="delivery-brand" href="/delivery">
-          <span aria-hidden="true" className="delivery-brand__mark">W</span>
-          <span>waiterapp</span>
-        </a>
-        <div className="delivery-search">
-          <Search aria-hidden="true" className="delivery-search__icon" size={20} strokeWidth={2} />
-          <Input aria-label="Buscar restaurantes ou pratos" className="delivery-search__input" onChange={(event) => setQuery(event.target.value)} placeholder="Buscar restaurantes ou pratos" value={query} variant="secondary" />
-        </div>
-        <Button className="delivery-location" variant="ghost">
-          <MapPin aria-hidden="true" size={16} strokeWidth={2} /> Rua das Flores, 123
-        </Button>
-        <div className="delivery-mode" role="group" aria-label="Modo de recebimento">
-          <Button className={deliveryMode === "delivery" ? "delivery-mode__button delivery-mode__button--active" : "delivery-mode__button"} onPress={() => setDeliveryMode("delivery")} variant="ghost">Entrega</Button>
-          <Button className={deliveryMode === "pickup" ? "delivery-mode__button delivery-mode__button--active" : "delivery-mode__button"} onPress={() => setDeliveryMode("pickup")} variant="ghost">Retirada</Button>
-        </div>
-        <Button aria-label={`Abrir carrinho com ${cartCount} itens`} className="delivery-cart-button" onPress={() => setShowCart(true)} variant="primary">
-          <ShoppingCart aria-hidden="true" className="delivery-cart-button__icon" size={20} strokeWidth={2} /><span>Carrinho</span><span className="delivery-cart-button__count">{cartCount}</span>
-        </Button>
+        <a aria-label="Waiterapp Delivery" href="/delivery"><Wordmark size="sm" /></a>
+        <SearchField label="Buscar restaurantes ou pratos" onChange={setQuery} value={query} />
+        <Button className="delivery-location" variant="ghost" isDisabled><MapPin aria-hidden="true" size={16} />Rua das Flores, 123</Button>
+        <SegmentedControl label="Modo de recebimento" onChange={setDeliveryMode} options={[{ id: "delivery", label: "Entrega" }, { id: "pickup", label: "Retirada" }]} value={deliveryMode} />
+        <Button onPress={() => setShowCart(true)} aria-label={`Abrir carrinho com ${cartCount} itens`}><ShoppingCart aria-hidden="true" size={20} />Carrinho<CountBadge tone="neutral" value={cartCount} /></Button>
       </header>
-
       <div className="delivery-layout">
-        <aside className="delivery-sidebar">
-          <nav aria-label="Navegação do delivery">
-            {navigation.map((item, index) => (
-              <Button className={`delivery-sidebar__item ${index === 0 ? "delivery-sidebar__item--active" : ""}`} key={item.label} onPress={() => handleNavigation(item.label)} variant="ghost">
-                <item.icon aria-hidden="true" className="delivery-sidebar__icon" size={22} strokeWidth={1.8} />{item.label}
-              </Button>
-            ))}
-          </nav>
-          <div className="delivery-sidebar__rule" />
-          <Button className="delivery-sidebar__item" variant="ghost"><CircleUserRound aria-hidden="true" className="delivery-sidebar__icon" size={22} strokeWidth={1.8} />Conta</Button>
-          <Button className="delivery-sidebar__item" variant="ghost"><CircleHelp aria-hidden="true" className="delivery-sidebar__icon" size={22} strokeWidth={1.8} />Ajuda</Button>
-          <div className="delivery-sidebar__footer">
-            <span className="delivery-sidebar__avatar">EA</span>
-            <span><strong>Eduardo</strong><small>Conta pessoal</small></span>
-          </div>
-        </aside>
-
+        <AppNavigation
+          activeId={activeNavigation}
+          footerItems={[{ disabled: true, id: "Conta", label: "Conta", icon: CircleUserRound }, { disabled: true, id: "Ajuda", label: "Ajuda", icon: CircleHelp }]}
+          items={navigation.map((item) => ({ ...item, id: item.label }))}
+          label="Navegação do delivery"
+          onNavigate={handleNavigation}
+          variant="sidebar"
+        />
         <main className="delivery-content" id="delivery-content-top">
-          <div className="delivery-mobile-header">
-            <strong>Entrega em</strong>
-            <Button className="delivery-mobile-location" variant="ghost">Rua das Flores, 123</Button>
+          <CategoryRail items={categories} label="Categorias de comidas" onSelect={setSelectedCategory} selectedId={selectedCategory} size="lg" />
+          <div className="delivery-filters">
+            {filters.map((filter) => <FilterChip key={filter.id} onPress={() => setActiveFilter((current) => current === filter.id ? null : filter.id)} selected={activeFilter === filter.id} trailing={filter.id === "price" ? <ChevronDown aria-hidden="true" size={16} /> : undefined}>{filter.label}</FilterChip>)}
           </div>
-
-          <section aria-label="Categorias" className="delivery-category-rail">
-            {categories.map((category) => (
-              <Button className={`delivery-category ${selectedCategory === category.id ? "delivery-category--active" : ""}`} key={category.id} onPress={() => setSelectedCategory(category.id)} variant="ghost">
-                <span className="delivery-category__image"><img alt="" src={category.image} /></span>
-                <span>{category.label}</span>
-              </Button>
-            ))}
+          {showServiceNotice && <InlineNotice onClose={() => setShowServiceNotice(false)}>Taxa de serviço transparente. Você vê tudo antes de confirmar.</InlineNotice>}
+          <section className="delivery-promos" id="delivery-promos" aria-label="Ofertas do dia">
+            <PromoBanner action={<Button onPress={() => setSelectedCategory("todos")}>Ver ofertas</Button>} description={<>Use o código <strong>WAITER20</strong> e comece bem.</>} image={stockImages.burger} tag="Oferta de boas-vindas" title="20% OFF no primeiro pedido" />
+            <PromoBanner action={<Button onPress={() => setSelectedCategory("todos")} variant="secondary">Explorar agora</Button>} description="Escolha restaurantes próximos e acompanhe cada etapa." image={margaritaImage} tag="Entrega especial" title="Chegue com sabor e calma" tone="success" />
           </section>
-
-          <div className="delivery-filter-row">
-            {filters.map((filter) => <Button className={`delivery-filter ${activeFilter === filter.id ? "delivery-filter--active" : ""}`} key={filter.id} onPress={() => setActiveFilter((current) => current === filter.id ? null : filter.id)} variant="secondary">{filter.label}{filter.id === "price" ? <ChevronDown aria-hidden="true" size={16} strokeWidth={2} /> : null}</Button>)}
-          </div>
-
-          <div className="delivery-note"><Info aria-hidden="true" size={17} strokeWidth={1.8} /><span>Taxa de serviço transparente. Você vê tudo antes de confirmar.</span><Button aria-label="Fechar aviso" className="delivery-note__close" isIconOnly onPress={() => setNotice("")} variant="ghost"><X aria-hidden="true" size={18} strokeWidth={2} /></Button></div>
-
-          <section className="delivery-promo-grid" id="delivery-promos" aria-label="Ofertas do dia">
-            <article className="delivery-promo delivery-promo--warm"><div><Chip size="sm" variant="soft">Oferta de boas-vindas</Chip><h2>20% OFF no primeiro pedido</h2><p>Use o código <strong>WAITER20</strong> e comece bem.</p><Button onPress={() => setSelectedCategory("todos")} variant="primary">Ver ofertas</Button></div><img alt="" className="delivery-promo__art" src={stockImages.burger} /></article>
-            <article className="delivery-promo delivery-promo--mint"><div><Chip size="sm" variant="soft">Entrega especial</Chip><h2>Chegue com sabor e calma</h2><p>Escolha restaurantes próximos e acompanhe cada etapa.</p><Button onPress={() => setSelectedCategory("todos")} variant="secondary">Explorar agora</Button></div><img alt="" className="delivery-promo__art" src={margaritaImage} /></article>
-          </section>
-
           <section className="delivery-section" id="delivery-food">
-            <div className="delivery-section__heading"><div><span className="delivery-eyebrow">Para pedir agora</span><h1>O que você quer comer hoje?</h1></div><Button variant="ghost">Ver cardápio →</Button></div>
-            <div className="delivery-food-grid">
-              {visibleMenuItems.map((item) => (
-                <Card className="delivery-food-card" key={item.id} variant="default">
-                  <Card.Content className="delivery-food-card__image-wrap"><img alt="" src={item.image} /><Chip size="sm" variant="soft">{item.category === "pizzas" ? "Mais pedido" : "Para experimentar"}</Chip></Card.Content>
-                  <Card.Header className="delivery-food-card__body"><Card.Title>{item.name}</Card.Title><Card.Description>{item.description}</Card.Description></Card.Header>
-                  <Card.Footer className="delivery-food-card__footer"><strong>{formatPrice(item.price)}</strong><Button aria-label={`Adicionar ${item.name}`} className="delivery-menu-card__add" isIconOnly onPress={() => addToCart(item)} variant="primary"><Plus aria-hidden="true" size={20} strokeWidth={2} /></Button></Card.Footer>
-                </Card>
-              ))}
+            <PageHeader eyebrow="Para pedir agora" title="O que você quer comer hoje?" />
+            <div className="delivery-products">
+              {visibleMenuItems.map((item) => <ProductCard key={item.id} layout="tile" onAdd={() => addToCart(item)} product={{ ...item, tag: item.category === "pizzas" ? "Mais pedido" : "Para experimentar" }} />)}
             </div>
-            {visibleMenuItems.length === 0 ? <div className="delivery-empty"><strong>Nenhuma comida encontrada</strong><span>Tente buscar por outro prato ou escolher outra categoria.</span></div> : null}
+            {!visibleMenuItems.length && <EmptyState description="Tente buscar por outro prato ou escolher outra categoria." title="Nenhuma comida encontrada" />}
           </section>
-
           <section className="delivery-section" id="delivery-restaurants">
-            <div className="delivery-section__heading"><div><span className="delivery-eyebrow">Escolha de onde pedir</span><h1>Restaurantes perto de você</h1></div><Button variant="ghost">Ver todos →</Button></div>
-            <div className="delivery-restaurant-grid">
-              {visibleRestaurants.map((restaurant) => (
-                <Card className="delivery-restaurant-card" key={restaurant.id} variant="default">
-                  <Card.Content className="delivery-restaurant-card__image-wrap"><img alt="" className="delivery-restaurant-card__image" src={restaurant.image} />{restaurant.badge ? <Chip className="delivery-restaurant-card__badge" size="sm" variant="soft">{restaurant.badge}</Chip> : null}</Card.Content>
-                  <Card.Header className="delivery-restaurant-card__body"><div className="delivery-restaurant-card__title"><div><Card.Title>{restaurant.name}</Card.Title><Card.Description><strong>★ {restaurant.rating}</strong> {restaurant.reviews} · {restaurant.distance} · {restaurant.time}</Card.Description></div><Button aria-label={`${favorites.includes(restaurant.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}: ${restaurant.name}`} className={`delivery-favorite ${favorites.includes(restaurant.id) ? "delivery-favorite--active" : ""}`} isIconOnly onPress={() => toggleFavorite(restaurant.id)} variant="ghost"><Heart aria-hidden="true" fill={favorites.includes(restaurant.id) ? "currentColor" : "none"} size={21} strokeWidth={1.8} /></Button></div><p className="delivery-restaurant-card__fee">{restaurant.fee}</p></Card.Header>
-                </Card>
-              ))}
+            <PageHeader eyebrow="Escolha de onde pedir" level={2} title="Restaurantes perto de você" />
+            <div className="delivery-restaurants">
+              {visibleRestaurants.map((restaurant) => <RestaurantCard favorite={favorites.includes(restaurant.id)} key={restaurant.id} onToggleFavorite={() => toggleFavorite(restaurant.id)} restaurant={restaurant} />)}
             </div>
-            {visibleRestaurants.length === 0 ? <div className="delivery-empty"><strong>Nenhum restaurante encontrado</strong><span>Tente buscar por outro nome ou limpar os filtros.</span></div> : null}
+            {!visibleRestaurants.length && <EmptyState description="Tente buscar por outro nome ou limpar os filtros." title="Nenhum restaurante encontrado" />}
           </section>
         </main>
       </div>
-
-      {showCart ? <div className="delivery-cart-layer"><Button aria-label="Fechar carrinho" className="delivery-cart-backdrop" onPress={() => setShowCart(false)} variant="ghost" /><aside aria-label="Seu carrinho" className="delivery-cart-drawer"><div className="delivery-cart-drawer__header"><div><span className="delivery-eyebrow">Seu pedido</span><h2>Carrinho</h2></div><Button aria-label="Fechar carrinho" className="delivery-close-button" isIconOnly onPress={() => setShowCart(false)} variant="ghost"><X aria-hidden="true" size={24} strokeWidth={1.8} /></Button></div>{cartLines.length ? <div className="delivery-cart-lines">{cartLines.map((item) => <div className="delivery-cart-line" key={item.id}><img alt="" src={item.image} /><div><strong>{item.name}</strong><span>{formatPrice(item.price)}</span></div><div className="delivery-cart-line__quantity"><Button aria-label={`Remover uma unidade de ${item.name}`} isIconOnly onPress={() => updateCart(item.id, -1)} variant="ghost"><Minus aria-hidden="true" size={18} strokeWidth={2} /></Button><span>{cartItems[item.id]}</span><Button aria-label={`Adicionar uma unidade de ${item.name}`} isIconOnly onPress={() => updateCart(item.id, 1)} variant="ghost"><Plus aria-hidden="true" size={18} strokeWidth={2} /></Button></div></div>)}</div> : <div className="delivery-cart-empty"><span aria-hidden="true" className="delivery-cart-empty__mark">W</span><strong>Seu carrinho está vazio</strong><p>Adicione algo gostoso para começar.</p></div>}<div className="delivery-cart-drawer__footer"><div><span>Subtotal</span><strong>{formatPrice(cartTotal)}</strong></div><Button className="delivery-checkout" isDisabled={!cartCount} onPress={checkout} variant="primary">Continuar para checkout</Button><small>Você poderá revisar endereço e forma de pagamento na próxima etapa.</small></div></aside></div> : null}
-
-      {showOrders ? <div className="delivery-cart-layer"><Button aria-label="Fechar meus pedidos" className="delivery-cart-backdrop" onPress={() => setShowOrders(false)} variant="ghost" /><aside aria-label="Meus pedidos" className="delivery-cart-drawer delivery-orders-drawer"><div className="delivery-cart-drawer__header"><div><span className="delivery-eyebrow">Histórico</span><h2>Meus pedidos</h2></div><Button aria-label="Fechar meus pedidos" className="delivery-close-button" isIconOnly onPress={() => setShowOrders(false)} variant="ghost"><X aria-hidden="true" size={24} strokeWidth={1.8} /></Button></div><div className="delivery-orders-list">{orders.map((order) => <Card className="delivery-order-card" key={order.id} variant="default"><Card.Header className="delivery-order-card__top"><div><Card.Title>{order.restaurant}</Card.Title><Card.Description>{order.id} · {order.time}</Card.Description></div><Chip className={order.status === "Entregue" ? "delivery-order-card__status delivery-order-card__status--done" : "delivery-order-card__status"} size="sm" variant="soft">{order.status}</Chip></Card.Header><Card.Content className="delivery-order-card__bottom"><span>Total do pedido</span><strong>{order.total}</strong></Card.Content><Card.Footer><Button className="delivery-order-card__repeat" onPress={() => setNotice(`Itens de ${order.restaurant} adicionados para repetir`)} variant="secondary">Pedir novamente</Button></Card.Footer></Card>)}</div></aside></div> : null}
-
-      {notice ? <div aria-live="polite" className="delivery-toast"><CheckCircle2 aria-hidden="true" size={20} strokeWidth={2} />{notice}</div> : null}
+      {showCart && <SidePanel eyebrow="Seu pedido" title="Seu carrinho" onClose={() => setShowCart(false)} footer={<CheckoutBar action={{ disabled: !cartCount, label: "Continuar para checkout", onPress: checkout }} amount={cartTotal} label="Subtotal" note="Checkout demonstrativo, sem pagamento ou envio real." placement="inline" />}>
+        {cartLines.length ? cartLines.map((item) => <OrderLine item={{ ...item, quantity: cartItems[item.id] }} key={item.id} onDecrement={() => updateCart(item.id, -1)} onIncrement={() => updateCart(item.id, 1)} />) : <EmptyState description="Adicione algo gostoso para começar." icon={<ShoppingCart aria-hidden="true" />} title="Seu carrinho está vazio" />}
+      </SidePanel>}
+      {showOrders && <SidePanel eyebrow="Histórico demonstrativo" title="Meus pedidos" onClose={() => { setShowOrders(false); setActiveNavigation("Início"); }}>
+        {orders.map((order) => <OrderSummaryCard key={order.id} order={{ title: order.restaurant, meta: `${order.id} · ${order.time}`, status: { label: order.status === "Em preparo" ? "Em produção" : order.status, tone: order.status === "Entregue" ? "ready" : "preparing" }, total: order.total }} action={<Button onPress={() => setNotice(`Repetição de pedido de ${order.restaurant} em breve.`)} variant="secondary">Pedir novamente</Button>} />)}
+      </SidePanel>}
+      {notice && <Toast message={notice} onClose={() => setNotice("")} showProgress />}
     </div>
   );
 }
