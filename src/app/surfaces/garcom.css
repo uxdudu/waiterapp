@@ -20,7 +20,7 @@
 }
 
 .garcom-screen--nav { padding-bottom: var(--space-1400); }
-.garcom-screen--full-width { max-width: none; }
+.garcom-screen--full-width { max-width: none; width: 100%; }
 .garcom-screen--checkout { padding-bottom: 280px; }
 .garcom-screen--detail { padding-bottom: var(--space-1500); }
 
