@@ -229,7 +229,7 @@ export function GarcomPage() {
     );
   } else {
     screen = (
-      <div className="garcom-screen garcom-screen--nav">
+      <div className="garcom-screen garcom-screen--nav garcom-screen--full-width">
         <div className="garcom-section">
           <PageHeader
             actions={(

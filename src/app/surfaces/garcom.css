@@ -20,6 +20,7 @@
 }
 
 .garcom-screen--nav { padding-bottom: var(--space-1400); }
+.garcom-screen--full-width { max-width: none; width: 100%; }
 .garcom-screen--checkout { padding-bottom: 280px; }
 .garcom-screen--detail { padding-bottom: var(--space-1500); }
 
@@ -161,4 +162,3 @@
 .garcom-screen--profile { padding-top: var(--space-150); }
 .garcom-profile > .wa-page-header .wa-page-header__title,
 .garcom-history > .wa-page-header .wa-page-header__title { font-weight: var(--font-weight-medium); }
-
