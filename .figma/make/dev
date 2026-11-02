@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+public_port="$PORT"
+export PORT=3001
+
+exec npm exec -- concurrently -k \
+  "npm run dev:client -- --port ${public_port} --host 0.0.0.0" \
+  "npm run dev:server"
